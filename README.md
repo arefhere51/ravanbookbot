@@ -15,13 +15,13 @@
 ابتدا فایل‌های این پوشه را به یک مخزن GitHub **عمومی** منتقل کنید. سپس دستور زیر را در سرور اجرا کنید و به‌جای `YOUR_GITHUB_USER` و `YOUR_REPOSITORY` نام واقعی مخزن را قرار دهید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USER/YOUR_REPOSITORY/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/arefhere51/ravanbookbot/main/install.sh | sudo bash
 ```
 
 نصب‌کننده به‌صورت تعاملی آدرس مخزن، توکن ربات (به‌شکل مخفی)، شناسهٔ کانال و شناسه‌های عددی ادمین را می‌پرسد؛ کد را از مخزن می‌گیرد، وابستگی‌ها را نصب و سرویس `systemd` را فعال می‌کند. به‌جای URL خام می‌توانید از `BOT_REPO_URL` برای تعیین مخزن استفاده کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_GITHUB_USER/YOUR_REPOSITORY/main/install.sh | sudo env BOT_REPO_URL=https://github.com/YOUR_GITHUB_USER/YOUR_REPOSITORY.git bash
+curl -fsSL https://raw.githubusercontent.com/arefhere51/ravanbookbot/main/install.sh | sudo env BOT_REPO_URL=https://github.com/arefhere51/ravanbookbot.git bash
 ```
 
 مخزن باید `bot.py` و `requirements.txt` را در ریشه داشته باشد. نصب‌کننده فقط برای Ubuntu/Debian طراحی شده و به دسترسی root و ترمینال تعاملی نیاز دارد.
