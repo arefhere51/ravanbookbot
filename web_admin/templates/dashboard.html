@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% block title %}داشبورد{% endblock %}
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-speedometer2"></i> داشبورد آمار</h4>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="value">{{ stats.total_items }}</div>
+          <div class="label">کل آیتم‌ها</div>
+        </div>
+        <div class="icon" style="background:rgba(59,130,246,.2);color:#60a5fa"><i class="bi bi-journal"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="value">{{ stats.active_items }}</div>
+          <div class="label">فعال</div>
+        </div>
+        <div class="icon" style="background:rgba(34,197,94,.2);color:#4ade80"><i class="bi bi-check-circle"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="value">{{ stats.archived_items }}</div>
+          <div class="label">بایگانی</div>
+        </div>
+        <div class="icon" style="background:rgba(245,158,11,.2);color:#fbbf24"><i class="bi bi-archive"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="value">{{ stats.total_users }}</div>
+          <div class="label">کاربران</div>
+        </div>
+        <div class="icon" style="background:rgba(168,85,247,.2);color:#c084fc"><i class="bi bi-people"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="value">{{ stats.total_downloads }}</div>
+          <div class="label">دانلودها</div>
+        </div>
+        <div class="icon" style="background:rgba(14,165,233,.2);color:#38bdf8"><i class="bi bi-download"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="value">{{ stats.total_searches }}</div>
+          <div class="label">جستجوها</div>
+        </div>
+        <div class="icon" style="background:rgba(236,72,153,.2);color:#f472b6"><i class="bi bi-search"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="value text-info">{{ stats.downloads_24h }}</div>
+      <div class="label">دانلود ۲۴ ساعت</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="value text-info">{{ stats.searches_24h }}</div>
+      <div class="label">جستجو ۲۴ ساعت</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="value">{{ stats.special_users }}</div>
+      <div class="label">کاربران ویژه</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="value">{{ stats.total_referrals }}</div>
+      <div class="label">دعوت‌های موفق</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">برترین آیتم‌ها (بر اساس دانلود)</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>#</th><th>عنوان</th><th>نوع</th><th>دانلود</th></tr></thead>
+            <tbody>
+            {% for it in top_items %}
+              <tr>
+                <td>{{ it.id }}</td>
+                <td><a href="{{ url_for('item_detail', item_id=it.id) }}" class="text-decoration-none" style="color:#93c5fd">{{ it.title[:40] }}{% if it.title|length > 40 %}…{% endif %}</a></td>
+                <td><span class="badge bg-secondary">{{ it.type }}</span></td>
+                <td>{{ it.dl_count }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4" class="text-muted text-center py-3">داده‌ای نیست</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">آخرین دانلودها</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>زمان</th><th>کاربر</th><th>آیتم</th></tr></thead>
+            <tbody>
+            {% for r in recent_downloads %}
+              <tr>
+                <td class="small text-muted">{{ r.timestamp }}</td>
+                <td><code>{{ r.user_id }}</code></td>
+                <td><a href="{{ url_for('item_detail', item_id=r.item_id) }}" class="text-decoration-none" style="color:#93c5fd">{{ r.title[:35] }}</a></td>
+              </tr>
+            {% else %}
+              <tr><td colspan="3" class="text-muted text-center py-3">داده‌ای نیست</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 mt-3">
+    <div class="card">
+      <div class="card-header">آخرین جستجوها</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>زمان</th><th>کاربر</th><th>عبارت</th><th>نتیجه</th></tr></thead>
+            <tbody>
+            {% for r in recent_searches %}
+              <tr>
+                <td class="small text-muted">{{ r.timestamp }}</td>
+                <td><code>{{ r.user_id }}</code></td>
+                <td>{{ r.query_text[:40] }}</td>
+                <td>
+                  {% if r.was_successful %}
+                    <span class="badge badge-status-active">موفق</span>
+                  {% else %}
+                    <span class="badge bg-secondary">ناموفق</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4" class="text-muted text-center py-3">داده‌ای نیست</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 mt-3">
+    <div class="card">
+      <div class="card-header">برترین دعوت‌کنندگان</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>شناسه کاربر</th><th>دعوت</th><th>ویژه</th></tr></thead>
+            <tbody>
+            {% for u in top_referrers %}
+              <tr>
+                <td><code>{{ u.user_id }}</code></td>
+                <td>{{ u.successful_invites }}</td>
+                <td>
+                  {% if u.has_special_access %}
+                    <span class="badge badge-status-active">بله</span>
+                  {% else %}
+                    <span class="badge bg-secondary">خیر</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="3" class="text-muted text-center py-3">داده‌ای نیست</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if daily_downloads %}
+<div class="card mt-3">
+  <div class="card-header">دانلود روزانه (۷ روز اخیر)</div>
+  <div class="card-body">
+    <div class="d-flex gap-2 flex-wrap">
+      {% for d in daily_downloads %}
+      <div class="text-center px-3 py-2 rounded" style="background:#15202b;min-width:90px">
+        <div class="fw-bold fs-5">{{ d.cnt }}</div>
+        <div class="small text-muted">{{ d.day }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="mt-3 text-muted small">
+  عضویت اجباری: {% if stats.force_join_enabled %}<span class="text-success">فعال</span>{% else %}<span class="text-warning">غیرفعال</span>{% endif %}
+  — تعداد کانال: {{ stats.force_join_channels }}
+  — دسته‌ها: {{ stats.total_categories }}
+  — تگ‌ها: {{ stats.total_tags }}
+</div>
+{% endblock %}

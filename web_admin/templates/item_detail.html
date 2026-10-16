@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}آیتم {{ item.id }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+  <h4 class="mb-0">
+    <a href="{{ url_for('items_list') }}" class="text-muted text-decoration-none"><i class="bi bi-arrow-right"></i></a>
+    آیتم #{{ item.id }}
+  </h4>
+  <div class="d-flex gap-2">
+    {% if item.status == 'active' %}
+    <form method="post" action="{{ url_for('item_archive', item_id=item.id) }}" onsubmit="return confirm('بایگانی شود؟')">
+      <input type="hidden" name="reason" value="بایگانی از پنل وب">
+      <button class="btn btn-outline-warning btn-sm"><i class="bi bi-archive"></i> بایگانی</button>
+    </form>
+    {% else %}
+    <form method="post" action="{{ url_for('item_unarchive', item_id=item.id) }}">
+      <button class="btn btn-outline-success btn-sm"><i class="bi bi-box-arrow-up"></i> خروج از بایگانی</button>
+    </form>
+    {% endif %}
+    <form method="post" action="{{ url_for('item_delete', item_id=item.id) }}" onsubmit="return confirm('حذف دائمی؟ این عمل برگشت‌ناپذیر است.')">
+      <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> حذف</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">ویرایش اطلاعات</div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('item_edit', item_id=item.id) }}">
+          <div class="mb-3">
+            <label class="form-label">عنوان</label>
+            <input type="text" name="title" class="form-control" value="{{ item.title }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">توضیحات</label>
+            <textarea name="description" class="form-control" rows="4">{{ item.description or '' }}</textarea>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">وضعیت</label>
+              <select name="status" class="form-select">
+                <option value="active" {% if item.status=='active' %}selected{% endif %}>فعال</option>
+                <option value="archived" {% if item.status=='archived' %}selected{% endif %}>بایگانی</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">نیاز به دعوت</label>
+              <select name="requires_invite" class="form-select">
+                <option value="0" {% if not item.requires_invite %}selected{% endif %}>خیر</option>
+                <option value="1" {% if item.requires_invite %}selected{% endif %}>بله</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">دلیل بایگانی</label>
+              <input type="text" name="archive_reason" class="form-control" value="{{ item.archive_reason or '' }}">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">دسته‌بندی‌ها</label>
+            <select name="category_ids" class="form-select" multiple size="6">
+              {% set selected_ids = categories|map(attribute='id')|list %}
+              {% for c in all_categories %}
+                <option value="{{ c.id }}" {% if c.id in selected_ids %}selected{% endif %}>{{ c.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="form-text text-muted">Ctrl/Cmd برای انتخاب چندتایی</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">تگ‌ها (با کاما جدا کنید)</label>
+            <input type="text" name="tags" class="form-control"
+              value="{% for t in tags %}{{ t.tag_name }}{% if not loop.last %}, {% endif %}{% endfor %}">
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> ذخیره تغییرات</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card mb-3">
+      <div class="card-header">اطلاعات</div>
+      <div class="card-body small">
+        <p><strong>نوع:</strong> {{ item.type }}</p>
+        <p><strong>وضعیت:</strong>
+          {% if item.status=='active' %}<span class="badge badge-status-active">فعال</span>
+          {% else %}<span class="badge badge-status-archived">بایگانی</span>{% endif %}
+        </p>
+        <p><strong>تعداد فایل:</strong> {{ files|length }}</p>
+        <p><strong>تعداد دانلود:</strong> {{ dl_count }}</p>
+        <p class="mb-0"><strong>لینک مستقیم:</strong><br>
+          <code class="small">?start=dl_{{ item.id }}</code>
+        </p>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-header">فایل‌ها</div>
+      <ul class="list-group list-group-flush">
+        {% for f in files %}
+        <li class="list-group-item bg-transparent text-light border-secondary small">
+          بخش {{ f.part_order }} — msg: {{ f.channel_message_id }}
+          <br><code class="text-muted">{{ f.file_id[:30] }}…</code>
+        </li>
+        {% else %}
+        <li class="list-group-item bg-transparent text-muted">فایلی ثبت نشده</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">آخرین دانلودها</div>
+      <ul class="list-group list-group-flush">
+        {% for d in recent_dls %}
+        <li class="list-group-item bg-transparent text-light border-secondary small d-flex justify-content-between">
+          <code>{{ d.user_id }}</code>
+          <span class="text-muted">{{ d.timestamp }}</span>
+        </li>
+        {% else %}
+        <li class="list-group-item bg-transparent text-muted">—</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
