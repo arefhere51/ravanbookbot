@@ -9,11 +9,7 @@ ask_secret() { local prompt="$1"; printf '%s' "$prompt" > /dev/tty; IFS= read -r
 [[ "$(id -u)" -eq 0 ]] || fail "این نصب‌کننده را با sudo اجرا کنید."
 [[ -e /dev/tty ]] || fail "برای وارد کردن تنظیمات، نصب‌کننده باید از یک ترمینال تعاملی اجرا شود."
 
-repo_url="${BOT_REPO_URL:-}"
-if [[ -z "$repo_url" ]]; then
-  ask "آدرس مخزن GitHub (HTTPS یا SSH): "
-  repo_url="$REPLY"
-fi
+repo_url="${BOT_REPO_URL:-https://github.com/arefhere51/ravanbookbot.git}"
 [[ -n "$repo_url" ]] || fail "آدرس مخزن GitHub خالی است."
 
 ask_secret "توکن ربات تلگرام (ورودی مخفی): "

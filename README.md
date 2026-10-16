@@ -12,13 +12,13 @@
 
 ## نصب تک‌دستوری روی Ubuntu/Debian
 
-ابتدا فایل‌های این پوشه را به یک مخزن GitHub **عمومی** منتقل کنید. سپس دستور زیر را در سرور اجرا کنید و به‌جای `YOUR_GITHUB_USER` و `YOUR_REPOSITORY` نام واقعی مخزن را قرار دهید:
+ابتدا فایل‌های این پوشه را در ریشهٔ مخزن عمومی [`arefhere51/ravanbookbot`](https://github.com/arefhere51/ravanbookbot) روی شاخهٔ `main` قرار دهید. سپس دستور زیر را در سرور اجرا کنید:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arefhere51/ravanbookbot/main/install.sh | sudo bash
 ```
 
-نصب‌کننده به‌صورت تعاملی آدرس مخزن، توکن ربات (به‌شکل مخفی)، شناسهٔ کانال و شناسه‌های عددی ادمین را می‌پرسد؛ کد را از مخزن می‌گیرد، وابستگی‌ها را نصب و سرویس `systemd` را فعال می‌کند. به‌جای URL خام می‌توانید از `BOT_REPO_URL` برای تعیین مخزن استفاده کنید:
+نصب‌کننده آدرس مخزن را از قبل دارد؛ توکن ربات را به‌شکل مخفی، شناسهٔ کانال و شناسه‌های عددی ادمین را می‌پرسد؛ سپس کد را از GitHub می‌گیرد، وابستگی‌ها را نصب و سرویس `systemd` را فعال می‌کند. در صورت نیاز می‌توانید آدرس پیش‌فرض را با متغیر `BOT_REPO_URL` تغییر دهید:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arefhere51/ravanbookbot/main/install.sh | sudo env BOT_REPO_URL=https://github.com/arefhere51/ravanbookbot.git bash
